@@ -72,21 +72,22 @@ vi = 0
 ns = np.arange(n+1)
 ts = ns*h
 
-exs, evs = exEuler(h, ts, xi, vi)
-realXs, realVs = real(ts)
-ixs, ivs = imEuler(h, ts, xi, vi)
-sxs, svs = symEuler(h, ts, xi, vi)
-
-eXError, eVError = error(exs, evs, realXs, realVs)
-iXError, iVError = error(ixs, ivs, realXs, realVs)
-
-eEs = Energies(exs, evs)
-iEs = Energies(ixs, ivs)
-sEs = Energies(sxs, svs)
+# exs, evs = exEuler(h, ts, xi, vi)
+# realXs, realVs = real(ts)
+# ixs, ivs = imEuler(h, ts, xi, vi)
+# sxs, svs = symEuler(h, ts, xi, vi)
+#
+# eXError, eVError = error(exs, evs, realXs, realVs)
+# iXError, iVError = error(ixs, ivs, realXs, realVs)
+#
+# eEs = Energies(exs, evs)
+# iEs = Energies(ixs, ivs)
+# sEs = Energies(sxs, svs)
 
 plot = int(sys.argv[1])
 #positions and velocities for explicit
 if plot == 1:
+    exs, evs = exEuler(h, ts, xi, vi)
     mpl.subplot(121)
     mpl.plot(ts, exs)
     mpl.ylabel('xs')
@@ -98,6 +99,9 @@ if plot == 1:
     mpl.show()
 #error for Xs and Vs in explicit method
 if plot == 2:
+    exs, evs = exEuler(h, ts, xi, vi)
+    realXs, realVs = real(ts)
+    eXError, eVError = error(exs, evs, realXs, realVs)
     mpl.subplot(121)
     mpl.plot(ts, eXError)
     mpl.ylabel('XErrors')
@@ -121,12 +125,15 @@ if plot == 3:
     mpl.show()
 #energy evolution for explicit
 if plot == 4:
+    exs, evs = exEuler(h, ts, xi, vi)
+    eEs = Energies(exs, evs)
     mpl.plot(ts, eEs)
     mpl.ylabel('Energies')
     mpl.xlabel('t')
     mpl.show()
 #positions and velocities for implicit
 if plot == 5:
+    ixs, ivs = imEuler(h, ts, xi, vi)
     mpl.subplot(121)
     mpl.plot(ts, ixs)
     mpl.ylabel('xs')
@@ -138,6 +145,13 @@ if plot == 5:
     mpl.show()
 #Energies, errors for implicit
 if plot == 6:
+    exs, evs = exEuler(h, ts, xi, vi)
+    ixs, ivs = imEuler(h, ts, xi, vi)
+    realXs, realVs = real(ts)
+    eXError, eVError = error(exs, evs, realXs, realVs)
+    iXError, iVError = error(ixs, ivs, realXs, realVs)
+    eEs = Energies(exs, evs)
+    iEs = Energies(ixs, ivs)
     mpl.subplot(321)
     mpl.plot(ts, iXError)
     mpl.ylabel('Implicit XErrors')
@@ -165,6 +179,9 @@ if plot == 6:
     mpl.show()
 #phase space geometries for explicit and implicit
 if plot == 7:
+    exs, evs = exEuler(h, ts, xi, vi)
+    ixs, ivs = imEuler(h, ts, xi, vi)
+    realXs, realVs = real(ts)
     mpl.subplot(311)
     mpl.plot(exs, evs)
     mpl.ylabel('Explicit Vs')
@@ -180,6 +197,7 @@ if plot == 7:
     mpl.show()
 #positions and velocities with the symplectic method
 if plot == 8:
+    sxs, svs = symEuler(h, ts, xi, vi)
     mpl.subplot(121)
     mpl.plot(ts, sxs)
     mpl.ylabel('xs')
@@ -191,6 +209,10 @@ if plot == 8:
     mpl.show()
 #phase space geometries with symplectic
 if plot == 9:
+    exs, evs = exEuler(h, ts, xi, vi)
+    ixs, ivs = imEuler(h, ts, xi, vi)
+    sxs, svs = symEuler(h, ts, xi, vi)
+    realXs, realVs = real(ts)
     mpl.subplot(221)
     mpl.plot(sxs, svs)
     mpl.ylabel('Symplectic Vs')
@@ -210,6 +232,7 @@ if plot == 9:
     mpl.show()
 #energy evolution for the symplectic method
 if plot == 10:
+    sEs = Energies(sxs, svs)
     mpl.plot(ts, sEs)
     mpl.ylabel('Energies')
     mpl.xlabel('t')
