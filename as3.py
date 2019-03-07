@@ -96,7 +96,7 @@ if plot == 1:
     mpl.plot(ts, evs)
     mpl.ylabel('vs')
     mpl.xlabel('t')
-    mpl.show()
+    mpl.savefig('plot1.pdf')
 #error for Xs and Vs in explicit method
 if plot == 2:
     exs, evs = exEuler(h, ts, xi, vi)
@@ -110,7 +110,7 @@ if plot == 2:
     mpl.plot(ts, eVError)
     mpl.ylabel('VErrors')
     mpl.xlabel('t')
-    mpl.show()
+    mpl.savefig('plot2.pdf')
 #maximum error and h proportional for explicit
 if plot == 3:
     hs, XErrorMaxs, VErrorMaxs = errorChange(h, ns, xi, vi)
@@ -122,7 +122,7 @@ if plot == 3:
     mpl.loglog(hs, VErrorMaxs)
     mpl.ylabel('VErrorMaximums')
     mpl.xlabel('hs')
-    mpl.show()
+    mpl.savefig('plot3.pdf')
 #energy evolution for explicit
 if plot == 4:
     exs, evs = exEuler(h, ts, xi, vi)
@@ -130,7 +130,7 @@ if plot == 4:
     mpl.plot(ts, eEs)
     mpl.ylabel('Energies')
     mpl.xlabel('t')
-    mpl.show()
+    mpl.savefig('plot4.pdf')
 #positions and velocities for implicit
 if plot == 5:
     ixs, ivs = imEuler(h, ts, xi, vi)
@@ -142,7 +142,7 @@ if plot == 5:
     mpl.plot(ts, ivs)
     mpl.ylabel('vs')
     mpl.xlabel('t')
-    mpl.show()
+    mpl.savefig('plot5.pdf')
 #Energies, errors for implicit
 if plot == 6:
     exs, evs = exEuler(h, ts, xi, vi)
@@ -176,7 +176,7 @@ if plot == 6:
     mpl.plot(ts, eEs)
     mpl.ylabel('Explicit Energies')
     mpl.xlabel('t')
-    mpl.show()
+    mpl.savefig('plot6.pdf')
 #phase space geometries for explicit and implicit
 if plot == 7:
     exs, evs = exEuler(h, ts, xi, vi)
@@ -194,7 +194,7 @@ if plot == 7:
     mpl.plot(realXs, realVs)
     mpl.ylabel('Analytic Vs')
     mpl.xlabel('Analytic Xs')
-    mpl.show()
+    mpl.savefig('plot7.pdf')
 #positions and velocities with the symplectic method
 if plot == 8:
     sxs, svs = symEuler(h, ts, xi, vi)
@@ -206,7 +206,7 @@ if plot == 8:
     mpl.plot(ts, svs)
     mpl.ylabel('vs')
     mpl.xlabel('t')
-    mpl.show()
+    mpl.savefig('plot8.pdf')
 #phase space geometries with symplectic
 if plot == 9:
     exs, evs = exEuler(h, ts, xi, vi)
@@ -229,11 +229,11 @@ if plot == 9:
     mpl.plot(realXs, realVs)
     mpl.ylabel('Analytic Vs')
     mpl.xlabel('Analytic Xs')
-    mpl.show()
+    mpl.savefig('plot9.pdf')
 #energy evolution for the symplectic method
 if plot == 10:
     sEs = Energies(sxs, svs)
     mpl.plot(ts, sEs)
     mpl.ylabel('Energies')
     mpl.xlabel('t')
-    mpl.show()
+    mpl.savefig('plot10.pdf')
