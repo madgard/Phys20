@@ -43,7 +43,6 @@ def imEuler(h, ts, xi, vi):
     for n in range(len(ts)-1):
         xi = xs[-1]
         vi = vs[-1]
-        xi1, vi1 = exEuler(h, ts, xs[-1], vs[-1])
         xi1 = (xi + h*vi)/(1+h**2)
         xs = np.append(xs, xi1)
         vi1 = (vi - h*xi)/(1+h**2)
@@ -232,6 +231,7 @@ if plot == 9:
     mpl.savefig('plot9.pdf')
 #energy evolution for the symplectic method
 if plot == 10:
+    sxs, svs = symEuler(h, ts, xi, vi)
     sEs = Energies(sxs, svs)
     mpl.plot(ts, sEs)
     mpl.ylabel('Energies')
