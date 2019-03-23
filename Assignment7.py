@@ -10,22 +10,22 @@ def distance_modulus_to_luminosity_distance(distance, uncertainty):
     d_Mpc = d_parsecs/10**6
     dd_Mpc = dd_parsecs/10**6
     return d_Mpc, dd_Mpc
-def luminosity_distance_to_distance_modulus(distance):
-    d_parsecs = distance*10**6
-    distance_modulus = [5*(log10(d)-1) for d in d_parsecs]
-    return distance_modulus
+# def luminosity_distance_to_distance_modulus(distance):
+#     d_parsecs = distance*10**6
+#     distance_modulus = [5*(log10(d)-1) for d in d_parsecs]
+#     return distance_modulus
 def Hubbles_Law(H0, redshift):
     luminosity_distance = c*redshift/H0
     return luminosity_distance
 def non_Linear_Hubbles_Law(redshift, H0, q):
     luminosity_distance = c*redshift/H0*(1 + ((1 - q)/2)*redshift)
     return luminosity_distance
-def H02(luminosity_distance, redshift, H0):
-    calc_lum_dist = Hubbles_Law(redshift, H0)
-    differences = luminosity_distance-calc_lum_dist
-    the_fraction = differences**2/calc_lum_dist
-    X2 = np.sum(the_fraction)
-    return X2
+# def H02(luminosity_distance, redshift, H0):
+#     calc_lum_dist = Hubbles_Law(redshift, H0)
+#     differences = luminosity_distance-calc_lum_dist
+#     the_fraction = differences**2/calc_lum_dist
+#     X2 = np.sum(the_fraction)
+#     return X2
 # def X2(luminosity_distance, redshift, H0, q):
 #     calc_lum_dist = non_Linear_Hubbles_Law(redshift, H0, q)
 #     differences = luminosity_distance-calc_lum_dist
