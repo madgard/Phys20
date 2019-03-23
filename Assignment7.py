@@ -43,6 +43,8 @@ def FLRW(redshift,H0,Ohm_m,Ohm_k,Ohm_r):
     d_M = d_C
     d_L = (1+redshift)*d_M
     return d_L
+def Ohm_k_0(redshift,H0,Ohm_m,Ohm_r):
+    return FLRW(redshift,H0,Ohm_m,0,Ohm_r)
 #def best_q(H0, redshift, luminosity_distance):
 #    for
 f = open("SCPUnion2.1_mu_vs_z.txt")
@@ -139,8 +141,9 @@ mpl.show()
 
 #5. Fit to our data with the FLRW via the curve-fit sci-py method.
 #   Plot this fit and the normalized residuals.
-parameters2, param_Covariance2 = curve_fit(FLRW, reds, lum_dists)
-H0_FLRW_scipy, Ohm_m, Ohm_k, Ohm_r = parameters2
+Ohm_k = 0
+parameters2, param_Covariance2 = curve_fit(Ohm_k_0, reds, lum_dists)
+H0_FLRW_scipy, Ohm_m, Ohm_r = parameters2
 calculated_with_FLRW = FLRW(points, H0_FLRW_scipy, Ohm_m, Ohm_k, Ohm_r)
 mpl.subplot(121)
 mpl.scatter(reds, lum_dists, s = 1, color = 'red')
@@ -161,13 +164,19 @@ mpl.scatter(predicted_FLRW, difference, s = 1, color = 'purple')#/(lum_dists*)pa
 mpl.xlabel('predicted')
 mpl.ylabel('residuals')
 mpl.show()
-print ("H0, Ohm_m, Ohm_k, Ohm_r:", parameters2)
+print ("H0, Ohm_m, Ohm_r:", parameters2)
 #The statistical significance of Ohm_m and therefore Ohm_A.
-print('Ohm_A: ', 1-Ohm_m-Ohm_k, 'Covariance Ohm_m, Ohm_k: ', param_Covariance2[1,2])
+print('Ohm_A: ', 1-Ohm_m, 'Covariance Ohm_m: ', param_Covariance2[1,1])
 # Without using radiation: ('Ohm_A: ', 0.8854955179779508, 'Covariance Ohm_m: ', 0.0001755520748644085)
-# With radiation: ('Ohm_A: ', 0.7113206558831211, 'Covariance Ohm_m: ', 0.01678985815413967)
+# With radiation:
+#('H0, Ohm_m, Ohm_r:', array([ 7.15858311e+04,  2.88679344e-01, -8.34937711e-02]))
+#('Ohm_A: ', 0.7113206558831211, 'Covariance Ohm_m: ', 0.01678985815413967)
+#
 # radiation changes the significance, so it is significant
 # With curvature too: ('Ohm_A: ', 1.0472213997406288, 'Covariance Ohm_m: ', 1.2194374917654434)
 # can we realy assume the universe is flat?
-print(Ohm_k, param_Covariance2[2,2])
+#('H0, Ohm_m, Ohm_k, Ohm_r:', array([ 1.05457509e+05,  1.41733513e+00, -1.46455653e+00, -3.34366578e-01]))
+#('Ohm_A: ', 1.0472213997406288, 'Covariance Ohm_m, Ohm_k: ', -1.5533733691661813)
+#(-1.464556525195065, 1.9909584750465565)
+# print(Ohm_k, param_Covariance2[2,2])
 f.close()
