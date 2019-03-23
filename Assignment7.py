@@ -32,14 +32,14 @@ def H02(luminosity_distance, redshift, H0):
 #     the_fraction = differences**2/calc_lum_dist
 #     X2 = np.sum(the_fraction)
 #     return X2
-def integrate(z, Ohm_r, Ohm_m, Ohm_k, Ohm_A):
-    integrate_this = 1/(Ohm_r*(1+z)**4+Ohm_m*(1+z)**3+Ohm_k*(1+z)**2+Ohm_A)
+def integrate(z, Ohm_m, Ohm_k, Ohm_A):
+    integrate_this = 1/(Ohm_m*(1+z)**3+Ohm_k*(1+z)**2+Ohm_A)
     return integrate_this
-def FLRW(redshift,H0,Ohm_m,Ohm_r):
+def FLRW(redshift,H0,Ohm_m):
     d_H = c/H0
     Ohm_A = 1 - Ohm_m
     Ohm_k = 0
-    integral = np.array([quad(integrate, 0, z, args=(Ohm_r, Ohm_m, Ohm_k, Ohm_A,))[0] for z in redshift])
+    integral = np.array([quad(integrate, 0, z, args=(Ohm_m, Ohm_k, Ohm_A,))[0] for z in redshift])#Ohm_r*(1+z)**4+
     d_C = d_H*integral
     d_M = d_C
     d_L = (1+redshift)*d_M
@@ -141,8 +141,8 @@ mpl.show()
 #5. Fit to our data with the FLRW via the curve-fit sci-py method.
 #   Plot this fit and the normalized residuals.
 parameters2, param_Covariance2 = curve_fit(FLRW, reds, lum_dists)
-H0_FLRW_scipy, Ohm_m, Ohm_r = parameters2
-calculated_with_FLRW = FLRW(points, H0_FLRW_scipy, Ohm_m, Ohm_r)
+H0_FLRW_scipy, Ohm_m = parameters2
+calculated_with_FLRW = FLRW(points, H0_FLRW_scipy, Ohm_m)
 mpl.subplot(121)
 mpl.scatter(reds, lum_dists, s = 1, color = 'red')
 mpl.scatter(points, calculated_with_FLRW, s = 1, color = 'black')
@@ -156,7 +156,7 @@ mpl.subplot(122)
 # mpl.ylabel('distance modulus')
 # mpl.show()
 ###residuals
-predicted_FLRW = FLRW(reds, H0_FLRW_scipy, Ohm_m, Ohm_r)
+predicted_FLRW = FLRW(reds, H0_FLRW_scipy, Ohm_m)
 difference = lum_dists - predicted_FLRW
 mpl.scatter(predicted_FLRW, difference, s = 1, color = 'purple')#/(lum_dists*)param_Covariance2[0,1]
 mpl.xlabel('predicted')
@@ -165,7 +165,5 @@ mpl.show()
 
 #The statistical significance of Ohm_m and therefore Ohm_A.
 print('Ohm_A: ', 1-Ohm_m, 'Covariance Ohm_m: ', param_Covariance2[1,1])
-# Without using radiation: ('Ohm_A: ', 0.8854955179779508, 'Covariance Ohm_m: ', 0.0001755520748644085)
-# With radiation: ('Ohm_A: ', 0.7113206558831211, 'Covariance Ohm_m: ', 0.01678985815413967)
-# radiation changes the significance, so it is significant
+
 f.close()
