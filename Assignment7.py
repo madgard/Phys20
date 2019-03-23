@@ -1,4 +1,4 @@
-from math import log, log10
+from math import log, log10, sqrt
 from scipy.constants import c
 import numpy as np
 import matplotlib.pyplot as mpl
@@ -88,6 +88,7 @@ mpl.show()
 #0.5:
 #68347.2301808295
 #5754.287266619709
+
 #3: Find the linear H0 for the first redshifts
 H0s = np.empty(0)
 for i in range(len(reds)):
@@ -97,6 +98,7 @@ H0_lin = np.mean(H0s)
 predicted_hubble = Hubbles_Law(H0_lin, reds)
 difference = lum_dists-predicted_hubble
 # X2 = H02(lum_dists, reds, H0_lin)
+print("H0:", H0_lin)
 
 #4: Plot with our linear regression with our H0
 mpl.subplot(121)
@@ -106,16 +108,17 @@ mpl.xlabel('redshift')
 mpl.ylabel('luminosity distance')
 # mpl.show()
 mpl.subplot(122)
-mpl.scatter(predicted_hubble, difference, s = 1, color = 'purple')
+mpl.scatter(predicted_hubble, difference/lum_uncs, s = 1, color = 'purple')
 mpl.xlabel('predicted')
-mpl.ylabel('residuals')
+mpl.ylabel('normalized residuals')
 mpl.show()
+
 #5. Fit to our data with the non-linear Hubble's law with a deceleration parameter,
 #   via the curve-fit sci-py method. Plot this fit and the normalized residuals
-parameters, param_Covariance = curve_fit(non_Linear_Hubbles_Law, reds, lum_dists)
+parameters, param_Covariance = curve_fit(non_Linear_Hubbles_Law, reds, lum_dists, sigma = lum_uncs)
 H0_deceleration_scipy, q = parameters
 #[6.01911023e+04 2.86107177e-01]
-
+print("H0, q:",parameters)
 points = np.arange(0.001,np.max(reds),.001)
 calculated_with_deceleration = non_Linear_Hubbles_Law(points, H0_deceleration_scipy, q)
 
@@ -133,16 +136,17 @@ mpl.subplot(122)
 # mpl.show()
 #residuals
 predicted_non_linear = non_Linear_Hubbles_Law(reds, H0_deceleration_scipy, q)
-difference = lum_dists - predicted_non_linear
-mpl.scatter(predicted_non_linear, difference, s = 1, color = 'purple')
+difference1 = lum_dists - predicted_non_linear
+norm_resid = difference1/lum_uncs
+mpl.scatter(predicted_non_linear, norm_resid, s = 1, color = 'purple')
 mpl.xlabel('predicted')
-mpl.ylabel('residuals')
+mpl.ylabel('normalized residuals')
 mpl.show()
 
-#5. Fit to our data with the FLRW via the curve-fit sci-py method.
+#6. Fit to our data with the FLRW via the curve-fit sci-py method.
 #   Plot this fit and the normalized residuals.
 Ohm_k = 0
-parameters2, param_Covariance2 = curve_fit(Ohm_k_0, reds, lum_dists)
+parameters2, param_Covariance2 = curve_fit(Ohm_k_0, reds, lum_dists, sigma = lum_uncs)
 H0_FLRW_scipy, Ohm_m, Ohm_r = parameters2
 calculated_with_FLRW = FLRW(points, H0_FLRW_scipy, Ohm_m, Ohm_k, Ohm_r)
 mpl.subplot(121)
@@ -159,24 +163,38 @@ mpl.subplot(122)
 # mpl.show()
 ###residuals
 predicted_FLRW = FLRW(reds, H0_FLRW_scipy, Ohm_m, Ohm_k, Ohm_r)
-difference = lum_dists - predicted_FLRW
-mpl.scatter(predicted_FLRW, difference, s = 1, color = 'purple')#/(lum_dists*)param_Covariance2[0,1]
+difference2 = lum_dists - predicted_FLRW
+norm_resid2 = difference2/lum_uncs
+mpl.scatter(predicted_FLRW, norm_resid2, s = 1, color = 'purple')#/(lum_dists*)param_Covariance2[0,1]
 mpl.xlabel('predicted')
-mpl.ylabel('residuals')
+mpl.ylabel('normalized residuals')
 mpl.show()
 print ("H0, Ohm_m, Ohm_r:", parameters2)
 #The statistical significance of Ohm_m and therefore Ohm_A.
-print('Ohm_A: ', 1-Ohm_m, 'Covariance Ohm_m: ', param_Covariance2[1,1])
+print('Ohm_A: ', 1-Ohm_m, 'Covariance Ohm_m: ', sqrt(param_Covariance2[1,1]))
 # Without using radiation: ('Ohm_A: ', 0.8854955179779508, 'Covariance Ohm_m: ', 0.0001755520748644085)
-# With radiation:
-#('H0, Ohm_m, Ohm_r:', array([ 7.15858311e+04,  2.88679344e-01, -8.34937711e-02]))
-#('Ohm_A: ', 0.7113206558831211, 'Covariance Ohm_m: ', 0.01678985815413967)
-#
+# With radiation: ('Ohm_A: ', 0.7113206558831211, 'Covariance Ohm_m: ', 0.12957568504213926)
 # radiation changes the significance, so it is significant
-# With curvature too: ('Ohm_A: ', 1.0472213997406288, 'Covariance Ohm_m: ', 1.2194374917654434)
-# can we realy assume the universe is flat?
-#('H0, Ohm_m, Ohm_k, Ohm_r:', array([ 1.05457509e+05,  1.41733513e+00, -1.46455653e+00, -3.34366578e-01]))
-#('Ohm_A: ', 1.0472213997406288, 'Covariance Ohm_m, Ohm_k: ', -1.5533733691661813)
-#(-1.464556525195065, 1.9909584750465565)
-# print(Ohm_k, param_Covariance2[2,2])
+
+#Again, but the universe is curved.
+del Ohm_k
+parameters21, param_Covariance21 = curve_fit(FLRW, reds, lum_dists, sigma = lum_uncs)
+H0_FLRW_scipy, Ohm_m, Ohm_k, Ohm_r = parameters21
+calculated_with_FLRW = FLRW(points, H0_FLRW_scipy, Ohm_m, Ohm_k, Ohm_r)
+mpl.subplot(121)
+mpl.scatter(reds, lum_dists, s = 1, color = 'red')
+mpl.scatter(points, calculated_with_FLRW, s = 1, color = 'black')
+mpl.xlabel('redshift')
+mpl.ylabel('luminosity distance')
+mpl.subplot(122)
+predicted_FLRW = FLRW(reds, H0_FLRW_scipy, Ohm_m, Ohm_k, Ohm_r)
+difference21 = lum_dists - predicted_FLRW
+norm_resid21 = difference21/lum_uncs
+mpl.scatter(predicted_FLRW, norm_resid21, s = 1, color = 'purple')
+mpl.xlabel('predicted')
+mpl.ylabel('normalized residuals')
+mpl.show()
+print ("H0, Ohm_m, Ohm_r:", parameters21)
+#The statistical significance of Ohm_m and therefore Ohm_A.
+print('Ohm_A: ', 1-Ohm_m-Ohm_k, 'Covariance Ohm_m: ', sqrt(param_Covariance21[1,1])+sqrt(param_Covariance21[2,2]))
 f.close()
