@@ -161,10 +161,13 @@ mpl.scatter(predicted_FLRW, difference, s = 1, color = 'purple')#/(lum_dists*)pa
 mpl.xlabel('predicted')
 mpl.ylabel('residuals')
 mpl.show()
-
+print parameters2
 #The statistical significance of Ohm_m and therefore Ohm_A.
-print('Ohm_A: ', 1-Ohm_m, 'Covariance Ohm_m: ', param_Covariance2[1,1])
+print('Ohm_A: ', 1-Ohm_m-Ohm_k, 'Covariance Ohm_m: ', param_Covariance2[1,1])
 # Without using radiation: ('Ohm_A: ', 0.8854955179779508, 'Covariance Ohm_m: ', 0.0001755520748644085)
 # With radiation: ('Ohm_A: ', 0.7113206558831211, 'Covariance Ohm_m: ', 0.01678985815413967)
 # radiation changes the significance, so it is significant
+# With curvature too: ('Ohm_A: ', 1.0472213997406288, 'Covariance Ohm_m: ', 1.2194374917654434)
+# can we realy assume the universe is flat?
+print(Ohm_k)
 f.close()
