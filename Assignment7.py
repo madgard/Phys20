@@ -132,7 +132,7 @@ mpl.show()
 #6. Fit to our data with the FLRW via the curve-fit sci-py method.
 #   Plot this fit and the normalized residuals.
 Ohm_k = 0
-parameters2, param_Covariance2 = curve_fit(FLRW, reds, lum_dists, sigma = lum_uncs)
+parameters2, param_Covariance2 = curve_fit(FLRW, reds, lum_dists, sigma = lum_uncs, bounds = ((-np.inf,0,0),(np.inf,np.inf,np.inf)))
 H0_FLRW_scipy, Ohm_m, Ohm_r = parameters2
 calculated_with_FLRW = FLRW(points, H0_FLRW_scipy, Ohm_m, Ohm_r)
 mpl.subplot(121)
