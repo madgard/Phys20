@@ -17,7 +17,7 @@ def non_Linear_Hubbles_Law(redshift, H0, q):
     luminosity_distance = c*redshift/H0*(1 + ((1 - q)/2)*redshift)
     return luminosity_distance
 def integrate(z, Ohm_r, Ohm_m, Ohm_k, Ohm_A):
-    integrate_this = 1/(Ohm_r*(1+z)**4+Ohm_m*(1+z)**3+Ohm_k*(1+z)**2+Ohm_A)
+    integrate_this = 1/sqrt(Ohm_r*(1+z)**4+Ohm_m*(1+z)**3+Ohm_k*(1+z)**2+Ohm_A)
     return integrate_this
 def FLRW(redshift,H0,Ohm_m,Ohm_r):
     d_H = c/H0
@@ -160,22 +160,22 @@ print('Ohm_A: ', 1-Ohm_m, 'Covariance Ohm_m: ', sqrt(param_Covariance2[1,1]))
 #Again, but the universe is curved.
 del Ohm_k
 parameters21, param_Covariance21 = curve_fit(FLRW2, reds, lum_dists, sigma = lum_uncs, bounds = ((-np.inf,0,0,0),(np.inf,np.inf,np.inf,np.inf)))
-H0_FLRW_scipy, Ohm_m, Ohm_A, Ohm_r = parameters21
-calculated_with_FLRW = FLRW2(points, H0_FLRW_scipy, Ohm_m, Ohm_A, Ohm_r)
+H0_FLRW_scipy21, Ohm_m21, Ohm_A21, Ohm_r21 = parameters21
+calculated_with_FLRW21 = FLRW2(points, H0_FLRW_scipy21, Ohm_m21, Ohm_A21, Ohm_r21)
 mpl.subplot(121)
 mpl.scatter(reds, lum_dists, s = 1, color = 'red')
-mpl.scatter(points, calculated_with_FLRW, s = 1, color = 'black')
+mpl.scatter(points, calculated_with_FLRW21, s = 1, color = 'black')
 mpl.xlabel('redshift')
 mpl.ylabel('luminosity distance')
 mpl.subplot(122)
-predicted_FLRW = FLRW2(reds, H0_FLRW_scipy, Ohm_m, Ohm_A, Ohm_r)
-difference21 = lum_dists - predicted_FLRW
+predicted_FLRW21 = FLRW2(reds, H0_FLRW_scipy21, Ohm_m21, Ohm_A21, Ohm_r21)
+difference21 = lum_dists - predicted_FLRW21
 norm_resid21 = difference21/lum_uncs
 mpl.scatter(predicted_FLRW, norm_resid21, s = 1, color = 'purple')
 mpl.xlabel('predicted')
 mpl.ylabel('normalized residuals')
 mpl.show()
-print ("H0, Ohm_m, Ohm_A, Ohm_r, Ohm_k:", parameters21, 1-Ohm_A-Ohm_m)
+print ("H0, Ohm_m, Ohm_A, Ohm_r, Ohm_k:", parameters21, 1-Ohm_A21-Ohm_m21)
 #7: Ohm_A and the uncertainty in it.
-print('Ohm_A: ', Ohm_A, 'Uncertainty in Ohm_A: ', sqrt(param_Covariance21[2,2]))
+print('Ohm_A: ', Ohm_A21, 'Uncertainty in Ohm_A: ', sqrt(param_Covariance21[2,2]))
 f.close()
